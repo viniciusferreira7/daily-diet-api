@@ -13,7 +13,15 @@ export async function userRoutes(app: FastifyInstance) {
       name: z.string().nonempty(),
     })
 
-    const { name } = createUserBodySchema.parse(request.body)
+    const user = createUserBodySchema.safeParse(request.body)
+
+    if (!user.success) {
+      return reply.status(400).send({
+        message: user.error.format(),
+      })
+    }
+
+    const { name } = user.data
 
     let sessionId = request.cookies.sessionId
 
@@ -22,7 +30,7 @@ export async function userRoutes(app: FastifyInstance) {
 
       reply.cookie('sessionId', sessionId, {
         path: '/',
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 30 days
+        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
       })
 
       await knex('users').insert({
