@@ -2,12 +2,12 @@ import { randomUUID } from 'crypto'
 import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { knex } from '../database'
-import { checkSessionIdExtis } from '../middlewares/check-sesssion-id-exists'
+import { checkSessionIdExits } from '../middlewares/check-session-id-exists'
 
 export async function userRoutes(app: FastifyInstance) {
   app.get(
     '/',
-    { preHandler: [checkSessionIdExtis] },
+    { preHandler: [checkSessionIdExits] },
     async (request, reply) => {
       return reply.status(200).send('Requisição realizada com sucesso')
     },
@@ -15,7 +15,7 @@ export async function userRoutes(app: FastifyInstance) {
 
   app.post('/', async (request, reply) => {
     const createUserBodySchema = z.object({
-      name: z.string().nonempty(),
+      name: z.string(),
     })
 
     const user = createUserBodySchema.safeParse(request.body)
