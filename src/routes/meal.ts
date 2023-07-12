@@ -5,6 +5,22 @@ import { knex } from '../database'
 import { randomUUID } from 'crypto'
 
 export async function mealRoutes(app: FastifyInstance) {
+  app.get(
+    '/',
+    { preHandler: [checkSessionIdExits] },
+    async (request, reply) => {
+      const sessionId = request.cookies.sessionId
+
+      const meals = await knex('meals')
+        .where('session_id', sessionId)
+        .select('*')
+
+      return {
+        meals,
+      }
+    },
+  )
+
   app.post(
     '/',
     { preHandler: [checkSessionIdExits] },
@@ -34,8 +50,10 @@ export async function mealRoutes(app: FastifyInstance) {
         is_diet: isDiet.toLowerCase() === 'true',
         session_id: sessionId,
       })
-
       return reply.status(201).send()
     },
   )
 }
+
+// TODO: Testar essa rota post
+// TODO: Criar as outras rotas
