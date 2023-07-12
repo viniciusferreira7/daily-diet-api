@@ -20,6 +20,31 @@ export async function mealRoutes(app: FastifyInstance) {
       }
     },
   )
+  app.get(
+    '/:id',
+    { preHandler: [checkSessionIdExits] },
+    async (request, reply) => {
+      const getMealParamsSchema = z.object({
+        id: z.string(),
+      })
+
+      const meal = getMealParamsSchema.parse(request.params)
+
+      const { id } = meal
+      const sessionId = request.cookies.sessionId
+
+      const meals = await knex('meals')
+        .where({
+          session_id: sessionId,
+          id,
+        })
+        .select('*')
+
+      return {
+        meals,
+      }
+    },
+  )
 
   app.post(
     '/',
@@ -53,7 +78,14 @@ export async function mealRoutes(app: FastifyInstance) {
       return reply.status(201).send()
     },
   )
-}
 
-// TODO: Testar essa rota post
-// TODO: Criar as outras rotas
+  app.put(
+    '/:id',
+    { preHandler: [checkSessionIdExits] },
+    async (request, reply) => {
+      const { id } = request.params
+
+      console.log(id)
+    },
+  )
+}
