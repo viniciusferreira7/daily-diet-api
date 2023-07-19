@@ -22,6 +22,23 @@ export async function mealRoutes(app: FastifyInstance) {
   )
 
   app.get(
+    '/summary',
+    { preHandler: [checkSessionIdExits] },
+    async (request, reply) => {
+      const sessionId = request.cookies.sessionId
+
+      const meals = await knex('meals')
+        .where('session_id', sessionId)
+        .select('*')
+
+      return reply.status(200).send({
+        message: `Your quantity of meals recorded was ${meals.length}`,
+        quantity: meals.length,
+      })
+    },
+  )
+
+  app.get(
     '/:id',
     { preHandler: [checkSessionIdExits] },
     async (request, reply) => {
@@ -142,7 +159,7 @@ export async function mealRoutes(app: FastifyInstance) {
 
       await knex('meals').where('id', id).delete('*')
 
-      return reply.status(200).send()
+      return reply.status(204).send()
     },
   )
 }
