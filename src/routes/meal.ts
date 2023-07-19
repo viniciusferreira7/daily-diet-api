@@ -60,6 +60,28 @@ export async function mealRoutes(app: FastifyInstance) {
       })
     },
   )
+  app.get(
+    '/summary/off-diet',
+    { preHandler: [checkSessionIdExits] },
+    async (request, reply) => {
+      const sessionId = request.cookies.sessionId
+
+      const isDiet = !!0
+
+      const meals = await knex('meals')
+        .where({
+          session_id: sessionId,
+          is_diet: isDiet,
+        })
+        .select('*')
+
+      return reply.status(200).send({
+        message: {
+          total: meals.length,
+        },
+      })
+    },
+  )
 
   app.get(
     '/:id',
