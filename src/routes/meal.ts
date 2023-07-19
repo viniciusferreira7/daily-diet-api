@@ -22,7 +22,7 @@ export async function mealRoutes(app: FastifyInstance) {
   )
 
   app.get(
-    '/summary',
+    '/summary/total',
     { preHandler: [checkSessionIdExits] },
     async (request, reply) => {
       const sessionId = request.cookies.sessionId
@@ -32,8 +32,10 @@ export async function mealRoutes(app: FastifyInstance) {
         .select('*')
 
       return reply.status(200).send({
-        message: `Your quantity of meals recorded was ${meals.length}`,
-        quantity: meals.length,
+        message: {
+          total: meals.length,
+        },
+      })
       })
     },
   )
