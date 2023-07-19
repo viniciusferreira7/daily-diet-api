@@ -84,6 +84,55 @@ export async function mealRoutes(app: FastifyInstance) {
   )
 
   app.get(
+    '/summary/sequence-in-diet',
+    { preHandler: [checkSessionIdExits] },
+    async (request, reply) => {
+      const sessionId = request.cookies.sessionId
+
+      const meals = await knex('meals')
+        .where({
+          session_id: sessionId,
+        })
+        .select('*')
+
+      // return reply.status(200).send({
+      //   message: {
+      //     total: meals.length,
+      //   },
+      // })
+
+      type meal = {
+        id: string
+        session_id: string
+        name: string
+        description: string
+        is_diet: boolean
+        created_at: string
+        updated_at?: string | undefined
+      }
+
+      const theBestSequencie: meal[] = []
+
+      meals.map((meal, index, arr) => {
+        const isTheLastMeal =
+          index === arr.length - 1 ? !!meal.is_diet : !!arr[index + 1].is_diet
+
+        if (meal.is_diet && isTheLastMeal) {
+          theBestSequencie.push(meal)
+        }
+
+        return meal
+      })
+
+      return reply.status(200).send({
+        message: {
+          sequence: theBestSequencie.length,
+        },
+      })
+    },
+  )
+
+  app.get(
     '/:id',
     { preHandler: [checkSessionIdExits] },
     async (request, reply) => {
