@@ -1,7 +1,7 @@
 import { config } from 'dotenv'
 import { z } from 'zod'
 
-if (process.env.NODE_END === 'test') {
+if (process.env.NODE_ENV === 'test') {
   config({
     path: '.env.test',
     override: true,
@@ -10,7 +10,9 @@ if (process.env.NODE_END === 'test') {
   config()
 }
 const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'production', 'test']),
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development'),
   PORT: z.coerce.number().default(3333),
   DATABASE_URL: z.string(),
   DATABASE_CLIENT: z.enum(['sqlite', 'pg']),
