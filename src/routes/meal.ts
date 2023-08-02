@@ -95,12 +95,6 @@ export async function mealRoutes(app: FastifyInstance) {
         })
         .select('*')
 
-      // return reply.status(200).send({
-      //   message: {
-      //     total: meals.length,
-      //   },
-      // })
-
       type meal = {
         id: string
         session_id: string
