@@ -9,7 +9,15 @@ export async function userRoutes(app: FastifyInstance) {
     '/',
     { preHandler: [checkSessionIdExits] },
     async (request, reply) => {
-      return reply.status(200).send('Requisição realizada com sucesso')
+      const sessionId = request.cookies.sessionId
+
+      const user = await knex('users')
+        .where('session_id', sessionId)
+        .select('*')
+
+      return reply.status(200).send({
+        user,
+      })
     },
   )
 
