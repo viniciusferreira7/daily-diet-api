@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { execSync } from 'node:child_process'
 import request from 'supertest'
 import { app } from '../src/app'
@@ -17,12 +17,29 @@ describe('User routes', () => {
     execSync('npm run knex migrate:latest')
   })
 
-  it('Should be able create to a new user', async () => {
+  it.todo('Should be able create to a new user', async () => {
     await request(app.server)
       .post('/user')
       .send({
         name: 'Vinicius',
       })
       .expect(201)
+  })
+
+  it('Should be able get a user', async () => {
+    const createUserResponse = await request(app.server)
+      .post('/user')
+      .send({
+        name: 'Vinicius',
+      })
+      .expect(201)
+    const cookies = createUserResponse.get('Set-Cookie')
+    const listUserResponse = await request(app.server)
+      .get('/user')
+      .set('Cookie', cookies)
+
+    expect(listUserResponse.body.user).toEqual([
+      expect.objectContaining({ name: 'Vinicius' }),
+    ])
   })
 })
