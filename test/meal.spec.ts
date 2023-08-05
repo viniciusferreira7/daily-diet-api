@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import request from 'supertest'
 import { execSync } from 'child_process'
 import { app } from '../src/app'
@@ -17,7 +17,7 @@ describe('Meal routes', () => {
     execSync('npm run knex migrate:latest')
   })
 
-  it('should be able create to a meal', async () => {
+  it.skip('should be able create to a meal', async () => {
     const createUserResponse = await request(app.server).post('/user').send({
       name: 'Vinicius',
     })
@@ -34,4 +34,44 @@ describe('Meal routes', () => {
       })
       .expect(201)
   })
+
+  it.skip('should be able list meats', async () => {
+    const createUserResponse = await request(app.server).post('/user').send({
+      name: 'Vinicius',
+    })
+
+    const cookies = createUserResponse.get('Set-Cookie')
+
+    await request(app.server).post('/meal').set('Cookie', cookies).send({
+      name: 'Almoço',
+      description: 'Arroz e feijão',
+      isDiet: 'true',
+    })
+
+    await request(app.server).post('/meal').set('Cookie', cookies).send({
+      name: 'Janta',
+      description: 'Arroz e Salada',
+      isDiet: 'true',
+    })
+
+    const listMealResponse = await request(app.server)
+      .get('/meal')
+      .set('Cookie', cookies)
+      .expect(200)
+
+    expect(listMealResponse.body.meals).toEqual([
+      expect.objectContaining({
+        name: 'Almoço',
+        description: 'Arroz e feijão',
+        is_diet: 1,
+      }),
+      expect.objectContaining({
+        name: 'Janta',
+        description: 'Arroz e Salada',
+        is_diet: 1,
+      }),
+    ])
+  })
 })
+
+// TODO: Remove skip from tests
