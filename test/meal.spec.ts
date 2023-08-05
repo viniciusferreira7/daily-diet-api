@@ -137,11 +137,24 @@ describe('Meal routes', () => {
     expect(totalMeals.body).toEqual(
       expect.objectContaining({
         message: {
+          meals: [
+            expect.objectContaining({
+              name: 'Almoço',
+              description: 'Arroz e feijão',
+              is_diet: 1,
+            }),
+            expect.objectContaining({
+              name: 'Janta',
+              description: 'Arroz e Salada',
+              is_diet: 1,
+            }),
+          ],
           total: 2,
         },
       }),
     )
   })
+
   it.skip('should be able to get total meals outside the diet', async () => {
     const createUserResponse = await request(app.server).post('/user').send({
       name: 'Vinicius',
@@ -175,6 +188,13 @@ describe('Meal routes', () => {
     expect(totalMeals.body).toEqual(
       expect.objectContaining({
         message: {
+          meals: [
+            expect.objectContaining({
+              name: 'Sobremesa',
+              description: 'Chocolate',
+              is_diet: 0,
+            }),
+          ],
           total: 1,
         },
       }),
