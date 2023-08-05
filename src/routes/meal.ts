@@ -55,6 +55,7 @@ export async function mealRoutes(app: FastifyInstance) {
 
       return reply.status(200).send({
         message: {
+          meals,
           total: meals.length,
         },
       })
@@ -77,6 +78,7 @@ export async function mealRoutes(app: FastifyInstance) {
 
       return reply.status(200).send({
         message: {
+          meals,
           total: meals.length,
         },
       })
@@ -120,6 +122,7 @@ export async function mealRoutes(app: FastifyInstance) {
 
       return reply.status(200).send({
         message: {
+          meals: theBestSequencie,
           sequence: theBestSequencie.length,
         },
       })
