@@ -145,6 +145,7 @@ export async function mealRoutes(app: FastifyInstance) {
           id,
         })
         .select('*')
+        .first()
 
       return {
         meal,
