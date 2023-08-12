@@ -20,7 +20,6 @@ export async function mealRoutes(app: FastifyInstance) {
       }
     },
   )
-
   app.get(
     '/summary/total',
     { preHandler: [checkSessionIdExits] },
@@ -84,7 +83,6 @@ export async function mealRoutes(app: FastifyInstance) {
       })
     },
   )
-
   app.get(
     '/summary/sequence-in-diet',
     { preHandler: [checkSessionIdExits] },
@@ -137,12 +135,11 @@ export async function mealRoutes(app: FastifyInstance) {
         id: z.string(),
       })
 
-      const meal = getMealParamsSchema.parse(request.params)
+      const { id } = getMealParamsSchema.parse(request.params)
 
-      const { id } = meal
       const sessionId = request.cookies.sessionId
 
-      const meals = await knex('meals')
+      const meal = await knex('meals')
         .where({
           session_id: sessionId,
           id,
@@ -150,7 +147,7 @@ export async function mealRoutes(app: FastifyInstance) {
         .select('*')
 
       return {
-        meals,
+        meal,
       }
     },
   )
