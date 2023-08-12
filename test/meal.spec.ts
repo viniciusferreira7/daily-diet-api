@@ -200,5 +200,50 @@ describe('Meal routes', () => {
       }),
     )
   })
+
+  it('should be able to get best sequence of meals within the diet', async () => {
+    const createUserResponse = await request(app.server).post('/user').send({
+      name: 'Vinicius',
+    })
+
+    const cookies = createUserResponse.get('Set-Cookie')
+
+    await request(app.server).post('/meal').set('Cookie', cookies).send({
+      name: 'Almoço',
+      description: 'Arroz e feijão',
+      isDiet: 'true',
+    })
+
+    await request(app.server).post('/meal').set('Cookie', cookies).send({
+      name: 'Janta',
+      description: 'Arroz e Salada',
+      isDiet: 'true',
+    })
+
+    await request(app.server).post('/meal').set('Cookie', cookies).send({
+      name: 'Sobremesa',
+      description: 'Chocolate',
+      isDiet: 'false',
+    })
+
+    await request(app.server).post('/meal').set('Cookie', cookies).send({
+      name: 'Lanche',
+      description: 'Laranja',
+      isDiet: 'true',
+    })
+
+    const totalMeals = await request(app.server)
+      .get('/meal/summary/sequence-in-diet')
+      .set('Cookie', cookies)
+      .expect(200)
+
+    expect(totalMeals.body).toEqual(
+      expect.objectContaining({
+        message: {
+          sequence: 2,
+        },
+      }),
+    )
+  })
 })
 // TODO: Remove skip from tests
