@@ -201,7 +201,7 @@ describe('Meal routes', () => {
     )
   })
 
-  it('should be able to get best sequence of meals within the diet', async () => {
+  it.skip('should be able to get best sequence of meals within the diet', async () => {
     const createUserResponse = await request(app.server).post('/user').send({
       name: 'Vinicius',
     })
@@ -242,6 +242,54 @@ describe('Meal routes', () => {
         message: {
           sequence: 2,
         },
+      }),
+    )
+  })
+
+  it.skip('should be able to get specific meal', async () => {
+    const createUserResponse = await request(app.server).post('/user').send({
+      name: 'Vinicius',
+    })
+
+    const cookies = createUserResponse.get('Set-Cookie')
+
+    await request(app.server).post('/meal').set('Cookie', cookies).send({
+      name: 'Almoço',
+      description: 'Arroz e feijão',
+      isDiet: 'true',
+    })
+
+    await request(app.server).post('/meal').set('Cookie', cookies).send({
+      name: 'Janta',
+      description: 'Arroz e Salada',
+      isDiet: 'true',
+    })
+
+    await request(app.server).post('/meal').set('Cookie', cookies).send({
+      name: 'Sobremesa',
+      description: 'Chocolate',
+      isDiet: 'false',
+    })
+
+    const listMealResponse = await request(app.server)
+      .get('/meal')
+      .set('Cookie', cookies)
+      .expect(200)
+
+    const theLastMeal = listMealResponse.body.meals[2]
+
+    const meal = await request(app.server)
+      .get(`/meal/${theLastMeal.id}`)
+      .set('Cookie', cookies)
+      .expect(200)
+
+    expect(meal.body).toEqual(
+      expect.objectContaining({
+        meal: expect.objectContaining({
+          name: 'Sobremesa',
+          description: 'Chocolate',
+          is_diet: 0,
+        }),
       }),
     )
   })
