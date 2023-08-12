@@ -331,5 +331,48 @@ describe('Meal routes', () => {
       .set('Cookie', cookies)
       .expect(204)
   })
+
+  it('should be able changes a meal', async () => {
+    const createUserResponse = await request(app.server).post('/user').send({
+      name: 'Vinicius',
+    })
+
+    const cookies = createUserResponse.get('Set-Cookie')
+
+    await request(app.server).post('/meal').set('Cookie', cookies).send({
+      name: 'Almoço',
+      description: 'Arroz e feijão',
+      isDiet: 'true',
+    })
+
+    await request(app.server).post('/meal').set('Cookie', cookies).send({
+      name: 'Janta',
+      description: 'Arroz e Salada',
+      isDiet: 'true',
+    })
+
+    await request(app.server).post('/meal').set('Cookie', cookies).send({
+      name: 'Sobremesa',
+      description: 'Chocolate',
+      isDiet: 'false',
+    })
+
+    const listMealResponse = await request(app.server)
+      .get('/meal')
+      .set('Cookie', cookies)
+      .expect(200)
+
+    const theLastMeal = listMealResponse.body.meals[2]
+
+    await request(app.server)
+      .put(`/meal/${theLastMeal.id}`)
+      .set('Cookie', cookies)
+      .send({
+        name: 'Janta',
+        description: 'Arroz e Salada',
+        isDiet: 'true',
+      })
+      .expect(204)
+  })
 })
 // TODO: Remove skip from tests
