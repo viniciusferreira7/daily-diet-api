@@ -97,33 +97,33 @@ export async function mealRoutes(app: FastifyInstance) {
         })
         .select('*')
 
-      type meal = {
-        id: string
-        session_id: string
-        name: string
-        description: string
-        is_diet: boolean
-        created_at: string
-        updated_at?: string | undefined
-      }
+      const sequenceInNumbers: number[] = []
 
-      const theBestSequencie: meal[] = []
-
-      meals.map((meal, index, arr) => {
-        const isTheLastMeal =
-          index === arr.length - 1 ? !!meal.is_diet : !!arr[index + 1].is_diet
-
-        if (meal.is_diet && isTheLastMeal) {
-          theBestSequencie.push(meal)
-        }
-
-        return meal
+      meals.forEach((meal) => {
+        sequenceInNumbers.push(Number(meal.is_diet))
       })
+
+      const summedSequences: number[] = []
+
+      sequenceInNumbers.reduce((accumulator, currentValue) => {
+        const sum = accumulator + currentValue
+        if (!currentValue) {
+          summedSequences.push(sum)
+          return 0
+        }
+        summedSequences.push(accumulator + currentValue)
+        return accumulator + currentValue
+      }, 0)
+
+      const sortFromLargestToSmallestNumber = summedSequences.sort(
+        (currentNumber, nextNumber) => (currentNumber > nextNumber ? -1 : 0),
+      )
+
+      const theBestSequence = sortFromLargestToSmallestNumber[0]
 
       return reply.status(200).send({
         message: {
-          meals: theBestSequencie,
-          sequence: theBestSequencie.length,
+          sequence: theBestSequence,
         },
       })
     },
