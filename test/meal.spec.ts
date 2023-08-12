@@ -17,7 +17,7 @@ describe('Meal routes', () => {
     execSync('npm run knex migrate:latest')
   })
 
-  it.skip('should be able create to a meal', async () => {
+  it('should be able create to a meal', async () => {
     const createUserResponse = await request(app.server).post('/user').send({
       name: 'Vinicius',
     })
@@ -35,7 +35,7 @@ describe('Meal routes', () => {
       .expect(201)
   })
 
-  it.skip('should be able list meats', async () => {
+  it('should be able list meats', async () => {
     const createUserResponse = await request(app.server).post('/user').send({
       name: 'Vinicius',
     })
@@ -73,7 +73,7 @@ describe('Meal routes', () => {
     ])
   })
 
-  it.skip('should be able to get total meats', async () => {
+  it('should be able to get total meats', async () => {
     const createUserResponse = await request(app.server).post('/user').send({
       name: 'Vinicius',
     })
@@ -104,7 +104,7 @@ describe('Meal routes', () => {
     )
   })
 
-  it.skip('should be able to get total meals within the diet', async () => {
+  it('should be able to get total meals within the diet', async () => {
     const createUserResponse = await request(app.server).post('/user').send({
       name: 'Vinicius',
     })
@@ -155,7 +155,7 @@ describe('Meal routes', () => {
     )
   })
 
-  it.skip('should be able to get total meals outside the diet', async () => {
+  it('should be able to get total meals outside the diet', async () => {
     const createUserResponse = await request(app.server).post('/user').send({
       name: 'Vinicius',
     })
@@ -201,7 +201,7 @@ describe('Meal routes', () => {
     )
   })
 
-  it.skip('should be able to get best sequence of meals within the diet', async () => {
+  it('should be able to get best sequence of meals within the diet', async () => {
     const createUserResponse = await request(app.server).post('/user').send({
       name: 'Vinicius',
     })
@@ -246,7 +246,7 @@ describe('Meal routes', () => {
     )
   })
 
-  it.skip('should be able to get specific meal', async () => {
+  it('should be able to get specific meal', async () => {
     const createUserResponse = await request(app.server).post('/user').send({
       name: 'Vinicius',
     })
@@ -294,7 +294,7 @@ describe('Meal routes', () => {
     )
   })
 
-  it.skip('should be able delete a meal', async () => {
+  it('should be able delete a meal', async () => {
     const createUserResponse = await request(app.server).post('/user').send({
       name: 'Vinicius',
     })
@@ -375,4 +375,3 @@ describe('Meal routes', () => {
       .expect(204)
   })
 })
-// TODO: Remove skip from tests

@@ -17,7 +17,7 @@ describe('User routes', () => {
     execSync('npm run knex migrate:latest')
   })
 
-  it.todo('Should be able create to a new user', async () => {
+  it('Should be able create to a new user', async () => {
     await request(app.server)
       .post('/user')
       .send({
